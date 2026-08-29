@@ -16,7 +16,11 @@ skill_watcher.py — 새 스킬/프로젝트 감시 → 자동 GitHub 출시 (�
 """
 import os, sys, subprocess, json, datetime
 
-PUBLISHER = r"C:\Users\user\WheelReverse\publish_skill.py"
+# 퍼블리셔: 스크립트와 같은 폴더(클라우드) 우선, Windows 로컬 경로 폴백
+_HERE = os.path.dirname(os.path.abspath(__file__))
+PUBLISHER = os.path.join(_HERE, "publish_skill.py")
+if not os.path.exists(PUBLISHER):
+    PUBLISHER = r"C:\Users\user\WheelReverse\publish_skill.py"
 GH = r"C:\Users\user\WheelReverse\ghbin\bin\gh.exe"
 if not os.path.exists(GH):
     GH = "gh"
