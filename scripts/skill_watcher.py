@@ -64,9 +64,16 @@ def main():
     published = 0
     skipped = 0
 
+    # 디버그 (env가 제대로 왔는지)
+    import sys
+    print(f"[debug] WATCH_DIRS={WATCH_DIRS!r}", file=sys.stderr)
+    print(f"[debug] GH={GH!r}", file=sys.stderr)
+
     for base in WATCH_DIRS:
         os.makedirs(base, exist_ok=True)
-        for entry in sorted(os.listdir(base)):
+        entries = sorted(os.listdir(base))
+        print(f"[debug] base={base!r} entries={entries!r}", file=sys.stderr)
+        for entry in entries:
             folder = os.path.join(base, entry)
             if not os.path.isdir(folder):
                 continue
