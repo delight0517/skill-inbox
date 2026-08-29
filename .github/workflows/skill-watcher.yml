@@ -1,0 +1,23 @@
+name: skill-watcher
+# 새 스킬 자동 출시 — skills/ 폴더에 새 폴더 push 시 자동으로 GitHub public repo 생성
+# 일정: 매일 09:00 / 21:00 (KST)  (UTC 00:00 / 12:00)
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 자동 출시 감시 실행
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          SKILL_WATCH_DIRS: ${{ github.workspace }}/skills
+        run: |
+          python scripts/skill_watcher.py
