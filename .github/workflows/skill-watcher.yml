@@ -20,4 +20,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           SKILL_WATCH_DIRS: ${{ github.workspace }}/skills
         run: |
+          echo "### 디버그: 폴더 구조 ###"
+          find . -maxdepth 3 -type d | head -20
+          echo "### skills 내용 ###"
+          ls -la skills/ 2>&1 | head -20
+          echo "### 스크립트 실행 ###"
           python scripts/skill_watcher.py
+          echo "### exit: $? ###"
