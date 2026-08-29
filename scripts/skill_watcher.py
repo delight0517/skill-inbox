@@ -43,9 +43,20 @@ def run(args, timeout=180):
     return subprocess.run(args, capture_output=True, text=True, timeout=timeout)
 
 def is_published(folder):
-    """git remote origin이 delight0517 GitHub면 이미 출시."""
-    r = run(["git", "-C", folder, "remote", "-v"], timeout=30)
-    return "github.com/delight0517" in r.stdout or "github.com/Rogan" in r.stdout
+    """폴더 자체가 git repo이고 origin이 delight0517 GitHub면 이미 출시."""
+    # 상위 repo(skill-inbox 등)의 remote를 물려받지 않도록,
+    # 폴더 자신이 git repo의 루트인지 먼저 확인 (rev-parse --show-toplevel)
+    r = run(["git", "-C", folder, "rev-parse", "--show-toplevel"], timeout=30)
+    if r.returncode != 0:
+        return False
+    toplevel = r.stdout.strip()
+    if not toplevel:
+        return False
+    # toplevel이 이 폴더 자신이 아니면 → 상위 repo에 속한 일반 폴더 → 미출시
+    if os.path.normcase(os.path.abspath(toplevel)) != os.path.normcase(os.path.abspath(folder)):
+        return False
+    r2 = run(["git", "-C", folder, "remote", "-v"], timeout=30)
+    return "github.com/delight0517" in r2.stdout or "github.com/Rogan" in r2.stdout
 
 def looks_like_project(folder):
     """소스/산출물이 있는 진짜 프로젝트인지."""
